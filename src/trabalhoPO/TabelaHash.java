@@ -1,50 +1,41 @@
 package trabalhoPO;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
+public class VetorItem {
 
-public class TabelaHash {
-    
-    private LinkedList<Reserva>[] tabela;
-    private int M; 
+    private Reserva[] vetor;
+    private int quant;
+    private static final int TAMANHO_MAX = 50000;
 
-    @SuppressWarnings("unchecked")
-    public TabelaHash(int tamanho) {
-        this.M = tamanho;
-        this.tabela = new LinkedList[M];
-        for (int i = 0; i < M; i++) {
-            tabela[i] = new LinkedList<>();
+    public VetorItem() {
+        this.vetor = new Reserva[TAMANHO_MAX];
+        this.quant = 0;
+    }
+
+    public VetorItem(int tamanho) {
+        this.vetor = new Reserva[tamanho];
+        this.quant = 0;
+    }
+
+    public int getQuant() {
+        return quant;
+    }
+
+    public void inserir(Reserva item) {
+        if (quant < vetor.length) {
+            this.vetor[quant] = item;
+            this.quant++;
         }
     }
 
-    public int Hashing(String chave) {
-        char carac;
-        int i, soma = 0;
-        
-        for (i = 0; i < chave.length(); i++) {
-            carac = chave.charAt(i);
-            soma += Character.getNumericValue(carac);
-        }
-        return Math.abs(soma % M); 
+    public Reserva get(int indice) {
+        return this.vetor[indice];
     }
 
-    public void inserir(Reserva r) {
-        int indice = Hashing(r.getNome());
-        tabela[indice].add(r);
-    }
-
-    public ArrayList<Reserva> pesquisar(String nome) {
-        int indice = Hashing(nome);
-        LinkedList<Reserva> lista = tabela[indice];
-        
-        ArrayList<Reserva> encontrados = new ArrayList<>();
-        
-        for (Reserva r : lista) {
-            if (r.getNome().equalsIgnoreCase(nome)) {
-                encontrados.add(r);
-            }
+    public Reserva[] getVetor() {
+        Reserva[] vetorReal = new Reserva[quant];
+        for (int i = 0; i < quant; i++) {
+            vetorReal[i] = vetor[i];
         }
-        
-        return encontrados.isEmpty() ? null : encontrados;
+        return vetorReal;
     }
 }
