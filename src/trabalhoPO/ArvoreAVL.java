@@ -1,3 +1,5 @@
+package trabalhoPO;
+
 public class ArvoreAVL {
 
     private NoAVL raiz;
@@ -9,15 +11,14 @@ public class ArvoreAVL {
         this.quant = 0;
         this.h = false;
     }
-
-    private int getFatorBalanceamento(NoAVL no) {
-        if (no == null) {
-            return 0;
-        } else {
-            return no.getFatorBalanceamento();
-        }
+    public int getQuant() {
+        return quant;
     }
 
+    public void setQuant(int quant) {
+        this.quant = quant;
+    }
+    
     public void inserir(Reserva item) {
         this.h = false;
         this.raiz = this.inserir(item, this.raiz);
@@ -159,4 +160,6 @@ public class ArvoreAVL {
         this.h = false;
         return no;
     }
+
+    
 }
