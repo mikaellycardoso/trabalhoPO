@@ -19,18 +19,14 @@ public class ArvoreAVL {
     }
 
     public void inserir(Reserva item) {
-        NoAVL aux = pesquisar(item.getNome(), this.raiz);
-        if (aux != null) {
-            return;
-        }
         this.h = false;
         this.raiz = this.inserir(item, this.raiz);
-        this.quant++;
     }
 
     private NoAVL inserir(Reserva item, NoAVL no) {
         if (no == null) {
             this.h = true;
+            this.quant++;
             return new NoAVL(item);
         }
 
@@ -41,10 +37,31 @@ public class ArvoreAVL {
             no = this.balancearEsq(no);
             return no;
 
-        } else {
+        } else if (comparacao < 0) {
             no.setEsq(this.inserir(item, no.getEsq()));
             no = this.balancearDir(no);
             return no;
+
+        } else {
+            this.h = false;
+            return no;
+        }
+    }
+
+    public NoAVL pesquisar(String nome) {
+        return pesquisar(nome, this.raiz);
+    }
+
+    private NoAVL pesquisar(String nome, NoAVL no) {
+        if (no == null) { return null; }
+        int comparacao = nome.compareToIgnoreCase(no.getItem().getNome());
+
+        if (comparacao == 0) {
+            return no;
+        } else if (comparacao > 0) {
+            return pesquisar(nome, no.getDir());
+        } else {
+            return pesquisar(nome, no.getEsq());
         }
     }
 
@@ -71,23 +88,6 @@ public class ArvoreAVL {
             }
         }
         return no;
-    }
-
-    public NoAVL pesquisar(String nome) {
-        return pesquisar(nome, this.raiz);
-    }
-
-    private NoAVL pesquisar(String nome, NoAVL no) {
-        if (no == null) { return null; }
-        int comparacao = nome.compareToIgnoreCase(no.getItem().getNome());
-
-        if (comparacao == 0) {
-            return no;
-        } else if (comparacao > 0) {
-            return pesquisar(nome, no.getDir());
-        } else {
-            return pesquisar(nome, no.getEsq());
-        }
     }
 
     private NoAVL rotacaoDireita(NoAVL no){
