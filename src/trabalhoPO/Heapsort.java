@@ -2,40 +2,58 @@ package trabalhoPO;
 
 public class Heapsort {
 
-    public static void ordenar(Reserva[] vetor) {
-        int n = vetor.length;
+    private Reserva[] lista;
+    private int quant;
 
-        for (int i = n / 2 - 1; i >= 0; i--) {
-            aplicarHeap(vetor, n, i);
-        }
-        for (int i = n - 1; i > 0; i--) {
-            trocar(vetor, 0, i);
-            aplicarHeap(vetor, i, 0);
-        }
+    public Heapsort(Reserva[] vetor) {
+        this.lista = vetor;
+        this.quant = vetor.length;
     }
 
-    private static void aplicarHeap(Reserva[] vetor, int n, int i) {
-        int maior = i; 
-        int esquerda = 2 * i + 1; 
-        int direita = 2 * i + 2; 
+    public void heapSort() {
+        int dir = quant - 1;
+        int esq = (dir - 1) / 2;
+        Reserva temp;
 
-        if (esquerda < n && vetor[esquerda].compareTo(vetor[maior]) > 0) {
-            maior = esquerda;
+        while (esq >= 0) {
+            refazHeap(esq, this.quant - 1);
+            esq--;
         }
 
-        if (direita < n && vetor[direita].compareTo(vetor[maior]) > 0) {
-            maior = direita;
-        }
-
-        if (maior != i) {
-            trocar(vetor, i, maior);
-
-            aplicarHeap(vetor, n, maior);
+        while (dir > 0) {
+            temp = this.lista[0];
+            this.lista[0] = this.lista[dir];
+            this.lista[dir] = temp;
+            dir--;
+            refazHeap(0, dir);
         }
     }
-    private static void trocar(Reserva[] vetor, int i, int j) {
-        Reserva temp = vetor[i];
-        vetor[i] = vetor[j];
-        vetor[j] = temp;
+    
+    private void refazHeap(int esq, int dir) {
+        int i = esq;
+        int mF = 2 * i + 1;
+        Reserva raiz = this.lista[i];
+        boolean heap = false;
+
+        while ((mF <= dir) && (!heap)) {
+            if (mF < dir) {
+                if (this.lista[mF].compareTo(this.lista[mF + 1]) < 0) {
+                    mF++;
+                }
+            }
+            if (raiz.compareTo(this.lista[mF]) < 0) {
+                this.lista[i] = this.lista[mF];
+                i = mF;
+                mF = 2 * i + 1;
+            } else {
+                heap = true;
+            }
+        }
+        
+        this.lista[i] = raiz;
+    }
+    
+    public Reserva[] getVetorOrdenado() {
+        return this.lista;
     }
 }

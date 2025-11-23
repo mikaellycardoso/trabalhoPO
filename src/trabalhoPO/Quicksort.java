@@ -2,36 +2,51 @@ package trabalhoPO;
 
 public class Quicksort {
 
-    public static void ordenar(Reserva[] vetor) {
-        ordenarRecursivo(vetor, 0, vetor.length - 1);
+    private Reserva[] lista;
+    private int quant;
+
+    public Quicksort(Reserva[] vetor) {
+        this.lista = vetor;
+        this.quant = vetor.length;
     }
-
-    private static void ordenarRecursivo(Reserva[] vetor, int inicio, int fim) {
-        if (inicio < fim) {
-            int p = particionar(vetor, inicio, fim);
-
-            ordenarRecursivo(vetor, inicio, p - 1);
-            ordenarRecursivo(vetor, p + 1, fim);
-        }
+    public void quicksort() {
+        ordena(0, this.quant - 1);
     }
-    private static int particionar(Reserva[] vetor, int inicio, int fim) {
-        Reserva pivo = vetor[fim];
-        
-        int i = (inicio - 1); 
+    
+    private void ordena(int esq, int dir) {
+        Reserva pivo, temp;
+        int i = esq, j = dir;
 
-        for (int j = inicio; j < fim; j++) {
-            if (vetor[j].compareTo(pivo) <= 0) {
+        pivo = this.lista[(i + j) / 2];
+
+        do {
+            while (this.lista[i].compareTo(pivo) < 0) {
                 i++;
-                trocar(vetor, i, j);
             }
-        }
-        trocar(vetor, i + 1, fim);
+            while (this.lista[j].compareTo(pivo) > 0) {
+                j--;
+            }
 
-        return i + 1;
+            if (i <= j) {
+                temp = this.lista[i];
+                this.lista[i] = this.lista[j];
+                this.lista[j] = temp;
+                i++;
+                j--;
+            }
+
+        } while (i <= j);
+
+        if (esq < j) {
+            ordena(esq, j);
+        }
+        
+        if (dir > i) {
+            ordena(i, dir);
+        }
     }
-    private static void trocar(Reserva[] vetor, int i, int j) {
-        Reserva temp = vetor[i];
-        vetor[i] = vetor[j];
-        vetor[j] = temp;
+
+    public Reserva[] getVetorOrdenado() {
+        return this.lista;
     }
 }
