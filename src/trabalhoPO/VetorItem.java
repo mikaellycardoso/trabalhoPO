@@ -11,6 +11,11 @@ public class VetorItem {
         this.quant = 0;
     }
 
+    public VetorItem(int tamanho) {
+        this.vetor = new Reserva[tamanho];
+        this.quant = 0;
+    }
+
     public int getQuant() {
         return quant;
     }
@@ -33,5 +38,4 @@ public class VetorItem {
         }
         return vetorReal;
     }
-
 }
