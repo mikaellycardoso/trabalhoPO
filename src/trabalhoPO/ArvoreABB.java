@@ -1,5 +1,7 @@
 package trabalhoPO;
 
+import java.util.ArrayList;
+
 public class ArvoreABB {
 
     private NoABB raiz;
@@ -10,18 +12,7 @@ public class ArvoreABB {
         this.quant = 0;
     }
 
-    public NoABB getRaiz() {
-        return raiz;
-    }
-    public int getQuant() {
-        return quant;
-    }
-
     public void inserir(Reserva item) {
-        NoABB aux = pesquisar(item.getNome(), this.raiz);
-        if (aux != null) {
-            return;
-        }
         this.raiz = inserir(item, this.raiz);
         this.quant++;
     }
@@ -30,28 +21,32 @@ public class ArvoreABB {
         if (no == null) {
             no = new NoABB(item);
         } else {
-            int comparacao = item.getNome().compareToIgnoreCase(no.getItem().getNome());
+            int comparacao = item.getNome().compareToIgnoreCase(no.getChave().getNome());
+
             if (comparacao > 0) {
                 no.setDir(inserir(item, no.getDir()));
-            } else {
+            } else if (comparacao < 0) {
                 no.setEsq(inserir(item, no.getEsq()));
+            } else {
+                no.adicionarItem(item);
             }
         }
         return no;
     }
 
-    public NoABB pesquisar(String nome) {
+    public ArrayList<Reserva> pesquisar(String nome) {
         return pesquisar(nome, this.raiz);
     }
 
-    private NoABB pesquisar(String nome, NoABB no) {
+    private ArrayList<Reserva> pesquisar(String nome, NoABB no) {
         if (no == null) {
-            return null;
+            return null; 
         }
-        int comparacao = nome.compareToIgnoreCase(no.getItem().getNome());
+
+        int comparacao = nome.compareToIgnoreCase(no.getChave().getNome());
 
         if (comparacao == 0) {
-            return no;
+            return no.getListaItens();
         } else if (comparacao > 0) {
             return pesquisar(nome, no.getDir());
         } else {
@@ -59,18 +54,19 @@ public class ArvoreABB {
         }
     }
 
-
-
-    public VetorItem CamCentral () {
-        VetorItem vetor = new VetorItem();
+    public VetorItem CamCentral() {
+        VetorItem vetor = new VetorItem(this.quant); 
         return (fazCamCentral(this.raiz, vetor));
     }
 
-
-    private VetorItem fazCamCentral (NoABB no, VetorItem vetor) {
+    private VetorItem fazCamCentral(NoABB no, VetorItem vetor) {
         if (no != null) {
             vetor = this.fazCamCentral(no.getEsq(), vetor);
-            vetor.inserir(no.getItem());
+            
+            for (Reserva r : no.getListaItens()) {
+                vetor.inserir(r);
+            }
+            
             vetor = this.fazCamCentral(no.getDir(), vetor);
         }
         return vetor;
@@ -82,6 +78,7 @@ public class ArvoreABB {
         balancear(vetor, arv, 0, this.quant - 1);
         return arv;
     }
+
     private void balancear(VetorItem vetor, ArvoreABB arv, int inicio, int fim) {
         int meio;
         if (inicio <= fim) {
