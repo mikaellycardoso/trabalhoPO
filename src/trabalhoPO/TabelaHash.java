@@ -1,41 +1,48 @@
 package trabalhoPO;
 
-public class VetorItem {
+import java.util.ArrayList;
+import java.util.LinkedList;
 
-    private Reserva[] vetor;
-    private int quant;
-    private static final int TAMANHO_MAX = 50000;
+public class TabelaHash {
+    
+    private LinkedList<Reserva>[] tabela;
+    private int M; 
 
-    public VetorItem() {
-        this.vetor = new Reserva[TAMANHO_MAX];
-        this.quant = 0;
-    }
-
-    public VetorItem(int tamanho) {
-        this.vetor = new Reserva[tamanho];
-        this.quant = 0;
-    }
-
-    public int getQuant() {
-        return quant;
-    }
-
-    public void inserir(Reserva item) {
-        if (quant < vetor.length) {
-            this.vetor[quant] = item;
-            this.quant++;
+    @SuppressWarnings("unchecked")
+    public TabelaHash(int tamanho) {
+        this.M = tamanho;
+        this.tabela = new LinkedList[M];
+        
+        for (int i = 0; i < M; i++) {
+            tabela[i] = new LinkedList<>();
         }
     }
 
-    public Reserva get(int indice) {
-        return this.vetor[indice];
+    private int hashing(String chave) {
+        int soma = 0;
+        for (int i = 0; i < chave.length(); i++) {
+            soma += (int) chave.charAt(i); 
+        }
+        return Math.abs(soma % M); 
     }
 
-    public Reserva[] getVetor() {
-        Reserva[] vetorReal = new Reserva[quant];
-        for (int i = 0; i < quant; i++) {
-            vetorReal[i] = vetor[i];
+    public void inserir(Reserva r) {
+        int indice = hashing(r.getNome());
+        tabela[indice].add(r);
+    }
+
+    public ArrayList<Reserva> pesquisar(String nome) {
+        int indice = hashing(nome);
+        LinkedList<Reserva> lista = tabela[indice];
+        
+        ArrayList<Reserva> encontrados = new ArrayList<>();
+        
+        for (Reserva r : lista) {
+            if (r.getNome().equalsIgnoreCase(nome)) {
+                encontrados.add(r);
+            }
         }
-        return vetorReal;
+        
+        return encontrados.isEmpty() ? null : encontrados;
     }
 }
