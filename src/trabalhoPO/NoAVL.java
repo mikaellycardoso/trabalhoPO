@@ -52,4 +52,15 @@ public class NoAVL {
     public void setDir(NoAVL dir) {
         this.dir = dir;
     }
-}
+
+    int getFatorBalanceamento() {
+        return 0;
+    }
+
+	public void setFatorBalanceamento(int i) {
+		
+	}
+
+		
+	}
+
