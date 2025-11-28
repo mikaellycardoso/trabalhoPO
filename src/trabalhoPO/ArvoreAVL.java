@@ -5,7 +5,8 @@ import java.util.ArrayList;
 public class ArvoreAVL {
 
     private NoAVL raiz;
-    private int quant; 
+    private int quant;
+	private boolean h; 
 
     public ArvoreAVL() {
         this.raiz = null;
@@ -15,10 +16,18 @@ public class ArvoreAVL {
     public int getQuant() {
         return quant;
     }
+    
     public void inserir(Reserva item) {
         this.raiz = inserir(this.raiz, item);
         this.quant++; 
     }
+    
+    private int altura(NoAVL N) {
+        if (N == null)
+            return 0;
+        return N.getAltura();
+    }
+
     private NoAVL inserir(NoAVL no, Reserva item) {
         if (no == null) {
             return new NoAVL(item);
@@ -78,41 +87,80 @@ public class ArvoreAVL {
             return pesquisar(nome, no.getEsq());
         }
     }
-    private int altura(NoAVL N) {
-        if (N == null)
-            return 0;
-        return N.getAltura();
-    }
+    
 
     private int getFatorBalanceamento(NoAVL N) {
         if (N == null)
             return 0;
         return altura(N.getEsq()) - altura(N.getDir());
     }
+    
+    private NoAVL rotacaoDireita(NoAVL no){
+        NoAVL temp1, temp2;
+        temp1 = no.getEsq();
 
-    private NoAVL rotacaoDireita(NoAVL y) {
-        NoAVL x = y.getEsq();
-        NoAVL T2 = x.getDir();
+        if (temp1.getFatorBalanceamento() == -1){
+            no.setEsq(temp1.getDir());
+            temp1.setDir(no);
+            no.setFatorBalanceamento(0);
+            no = temp1;
+        } else {
+            temp2 = temp1.getDir();
+            temp1.setDir(temp2.getEsq());
+            temp2.setEsq(temp1);
+            no.setEsq(temp2.getDir());
+            temp2.setDir(no);
 
-        x.setDir(y);
-        y.setEsq(T2);
 
-        y.setAltura(Math.max(altura(y.getEsq()), altura(y.getDir())) + 1);
-        x.setAltura(Math.max(altura(x.getEsq()), altura(x.getDir())) + 1);
-
-        return x;
+            if (temp2.getFatorBalanceamento() == -1)
+                no.setFatorBalanceamento(1);
+            else
+                no.setFatorBalanceamento(0);
+            if (temp2.getFatorBalanceamento() == 1)
+                temp1.setFatorBalanceamento(-1);
+            else
+                temp1.setFatorBalanceamento(0);
+            no = temp2;
+        }
+        no.setFatorBalanceamento(0);
+        this.h = false;
+        return no;
     }
 
-    private NoAVL rotacaoEsquerda(NoAVL x) {
-        NoAVL y = x.getDir();
-        NoAVL T2 = y.getEsq();
+    private NoAVL rotacaoEsquerda(NoAVL no){
+        NoAVL temp1, temp2;
+        temp1 = no.getDir();
 
-        y.setEsq(x);
-        x.setDir(T2);
+        if (temp1.getFatorBalanceamento() == 1){
+            no.setDir(temp1.getEsq());
+            temp1.setEsq(no);
+            no.setFatorBalanceamento(0);
+            no = temp1;
+        } else {
 
-        x.setAltura(Math.max(altura(x.getEsq()), altura(x.getDir())) + 1);
-        y.setAltura(Math.max(altura(y.getEsq()), altura(y.getDir())) + 1);
+            temp2 = temp1.getEsq();
+            temp1.setEsq(temp2.getDir());
+            temp2.setDir(temp1);
+            no.setDir(temp2.getEsq());
+            temp2.setEsq(no);
 
-        return y;
+            if (temp2.getFatorBalanceamento() == 1)
+                no.setFatorBalanceamento(-1);
+            else
+                no.setFatorBalanceamento(0);
+
+            if (temp2.getFatorBalanceamento() == -1)
+                temp1.setFatorBalanceamento(1);
+            else
+                temp1.setFatorBalanceamento(0);
+
+            no = temp2;
+        }
+
+        no.setFatorBalanceamento(0);
+        this.h = false;
+        return no;
     }
+
+   
 }
